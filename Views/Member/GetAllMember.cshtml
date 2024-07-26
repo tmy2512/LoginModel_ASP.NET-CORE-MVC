@@ -1,0 +1,43 @@
+﻿
+@model IEnumerable<MemberModel>
+@{
+    ViewBag.Title = "Members";
+}
+    <div class="row text">
+        <div class="col-md-8 offset-2">
+            <p><h1>Member</h1></p>
+            @* <button>Add new member</button> *@
+<form asp-controller="Member" asp-action="GetAllMember" method="get">
+            <div class="input-group">
+                <input type="search" name="searchName" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                <button type="submit" class="btn btn-outline-primary" data-mdb-ripple-init>search</button>
+            </div>
+            </form>
+            <div>
+    <a asp-action="AddNewMember" class="btn btn-primary">Add New Member</a>
+</div>
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Year of birth</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            @foreach (var member in Model)
+            {
+                        <tr>
+                                <td>@member.MemberName</td>
+                                <td>@member.Email</td>
+                                <td>@member.YearOfBirth</td>
+                                <td>@member.Gender</td>
+                                 <td>@member.Phone</td>
+
+                            <td><a class="text-dark btn btn-outline-success" asp-controller="Member" asp-action="UpdateMember" asp-route-id="@member.Id">Edit</a></td>
+                            <td><a class="text-dark btn btn-outline-danger" asp-controller="Member" asp-action="DeleteMember" asp-route-id="@member.Id">Delete</a></td>
+                        </tr>
+            }
+            </table>
+        </div>
+    </div>

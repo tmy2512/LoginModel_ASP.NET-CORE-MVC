@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+
+@model HomeWork.Models.ViewModels.MemberViewModel 
+@{
+    ViewData["Title"] = "Login";
+    var lockoutEndTime = httpContextAccessor.HttpContext.Session.GetString("LockoutEndTime");
+}
+<form method="post" asp-action="Login">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+     <div class="form-group">
+                <label asp-for="MemberName" class="control-label">Name</label>
+                <input asp-for="MemberName" class="form-control" id="memberName" required= "Tên đăng nhập là bắt buộc" />
+                <span asp-validation-for="MemberName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MemberPassword" class="control-label">Password</label>
+                <input asp-for="MemberPassword" class="form-control" type="password" id="memberPassword" required= "Password là bắt buộc"/>
+                <span asp-validation-for="MemberPassword" class="text-danger"></span>
+            </div>
+            <div id="lockoutTimer" class="text-danger"></div> <!-- Hiển thị thời gian còn lại nếu bị khóa -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var lockoutEndTime = '@lockoutEndTime';
+        if (lockoutEndTime) {
+            var lockoutDateTime = new Date(lockoutEndTime);
+            var now = new Date();
+
+            if (lockoutDateTime > now) {
+                var remainingTime = (lockoutDateTime - now) / 1000; // Thời gian còn lại tính bằng giây
+                $('#memberName').prop('disabled', true);
+                $('#memberPassword').prop('disabled', true);
+
+                // Hiển thị thời gian còn lại
+                setInterval(function() {
+                    remainingTime -= 1;
+                    if (remainingTime <= 0) {
+                        $('#memberName').prop('disabled', false);
+                        $('#memberPassword').prop('disabled', false);
+                        $('#lockoutTimer').text('Bạn có thể thử lại ngay bây giờ.');
+                        clearInterval(this);
+                    } else {
+                        $('#lockoutTimer').text('Thời gian còn lại: ' + Math.ceil(remainingTime / 60) + ' phút');
+                    }
+                }, 1000); // Cập nhật mỗi giây
+            }
+        }
+    });
+</script>
